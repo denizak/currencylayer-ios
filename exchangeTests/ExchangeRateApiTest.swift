@@ -22,5 +22,19 @@ final class ExchangeRateApiTest: XCTestCase {
         
         waitForExpectations(timeout: 10, handler: nil)
     }
+    
+    func testGetLiveData() {
+        let getLiveDataExpectation = expectation(description: #function)
+        let api = ExchangeRateApi()
+        
+        api.getLiveData { quotes, sourceCurrency, timestamp in
+            XCTAssertGreaterThan(quotes.count, 0)
+            XCTAssertEqual(sourceCurrency?.code, "USD")
+            XCTAssertNotNil(timestamp)
+            getLiveDataExpectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
 
 }
