@@ -13,3 +13,17 @@ struct Quote {
     let leftValue: Decimal
     let rightValue: Decimal
 }
+
+extension Quote {
+    func convert(from: Currency, value: Decimal) -> (Currency, Decimal)? {
+        if from == left {
+            let convertedValue = value / leftValue * rightValue
+            return (right, convertedValue)
+        } else if from == right {
+            let convertedValue = value / rightValue * leftValue
+            return (left, convertedValue)
+        } else {
+            return nil
+        }
+    }
+}

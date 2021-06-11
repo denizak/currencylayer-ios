@@ -16,7 +16,6 @@
 		60AAD6C92673B13000B550FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60AAD6C72673B13000B550FC /* Main.storyboard */; };
 		60AAD6CB2673B13100B550FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60AAD6CA2673B13100B550FC /* Assets.xcassets */; };
 		60AAD6CE2673B13100B550FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60AAD6CC2673B13100B550FC /* LaunchScreen.storyboard */; };
-		60AAD6D92673B13200B550FC /* exchangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6D82673B13200B550FC /* exchangeTests.swift */; };
 		60AAD6E42673B13200B550FC /* exchangeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6E32673B13200B550FC /* exchangeUITests.swift */; };
 /* End PBXBuildFile section */
 
@@ -50,7 +49,6 @@
 		60AAD6CD2673B13100B550FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		60AAD6CF2673B13100B550FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		60AAD6D42673B13200B550FC /* exchangeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = exchangeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		60AAD6D82673B13200B550FC /* exchangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = exchangeTests.swift; sourceTree = "<group>"; };
 		60AAD6DA2673B13200B550FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		60AAD6DF2673B13200B550FC /* exchangeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = exchangeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		60AAD6E32673B13200B550FC /* exchangeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = exchangeUITests.swift; sourceTree = "<group>"; };
@@ -129,7 +127,6 @@
 		60AAD6D72673B13200B550FC /* exchangeTests */ = {
 			isa = PBXGroup;
 			children = (
-				60AAD6D82673B13200B550FC /* exchangeTests.swift */,
 				60AAD6DA2673B13200B550FC /* Info.plist */,
 				600A0A7C2673B2B40036E848 /* QuoteTest.swift */,
 			);
@@ -288,7 +285,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				600A0A7D2673B2B40036E848 /* QuoteTest.swift in Sources */,
-				60AAD6D92673B13200B550FC /* exchangeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
