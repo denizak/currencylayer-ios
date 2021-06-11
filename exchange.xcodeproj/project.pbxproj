@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		600A0A762673B1CC0036E848 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A0A752673B1CC0036E848 /* Currency.swift */; };
+		600A0A782673B1F00036E848 /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A0A772673B1F00036E848 /* Quote.swift */; };
+		600A0A7D2673B2B40036E848 /* QuoteTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600A0A7C2673B2B40036E848 /* QuoteTest.swift */; };
 		60AAD6C22673B13000B550FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C12673B13000B550FC /* AppDelegate.swift */; };
 		60AAD6C42673B13000B550FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C32673B13000B550FC /* SceneDelegate.swift */; };
 		60AAD6C62673B13000B550FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C52673B13000B550FC /* ViewController.swift */; };
@@ -35,6 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		600A0A752673B1CC0036E848 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
+		600A0A772673B1F00036E848 /* Quote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
+		600A0A7C2673B2B40036E848 /* QuoteTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteTest.swift; sourceTree = "<group>"; };
 		60AAD6BE2673B13000B550FC /* exchange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = exchange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60AAD6C12673B13000B550FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		60AAD6C32673B13000B550FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -76,6 +82,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		600A0A792673B21A0036E848 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				600A0A752673B1CC0036E848 /* Currency.swift */,
+				600A0A772673B1F00036E848 /* Quote.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
 		60AAD6B52673B12F00B550FC = {
 			isa = PBXGroup;
 			children = (
@@ -99,6 +114,7 @@
 		60AAD6C02673B13000B550FC /* exchange */ = {
 			isa = PBXGroup;
 			children = (
+				600A0A792673B21A0036E848 /* Entities */,
 				60AAD6C12673B13000B550FC /* AppDelegate.swift */,
 				60AAD6C32673B13000B550FC /* SceneDelegate.swift */,
 				60AAD6C52673B13000B550FC /* ViewController.swift */,
@@ -115,6 +131,7 @@
 			children = (
 				60AAD6D82673B13200B550FC /* exchangeTests.swift */,
 				60AAD6DA2673B13200B550FC /* Info.plist */,
+				600A0A7C2673B2B40036E848 /* QuoteTest.swift */,
 			);
 			path = exchangeTests;
 			sourceTree = "<group>";
@@ -258,8 +275,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				600A0A762673B1CC0036E848 /* Currency.swift in Sources */,
 				60AAD6C62673B13000B550FC /* ViewController.swift in Sources */,
 				60AAD6C22673B13000B550FC /* AppDelegate.swift in Sources */,
+				600A0A782673B1F00036E848 /* Quote.swift in Sources */,
 				60AAD6C42673B13000B550FC /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,6 +287,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				600A0A7D2673B2B40036E848 /* QuoteTest.swift in Sources */,
 				60AAD6D92673B13200B550FC /* exchangeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
