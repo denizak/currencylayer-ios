@@ -17,10 +17,10 @@ final class QuoteTest: XCTestCase {
         
         let quote = Quote(left: usd, right: jpy, leftValue: 1, rightValue: 109.440996)
         
-        let (convertedCurrency, convertedValue) = quote.convert(from: usd, value: 10)!
+        let convertedCurrencyValue = quote.convert(from: usd, value: 10)!
         
-        XCTAssertEqual(jpy, convertedCurrency)
-        XCTAssertEqual(1094.40996, convertedValue)
+        XCTAssertEqual(jpy, convertedCurrencyValue.currency)
+        XCTAssertEqual(1094.40996, convertedCurrencyValue.value)
     }
     
     func testConvertLeft() {
@@ -29,10 +29,10 @@ final class QuoteTest: XCTestCase {
         
         let quote = Quote(left: usd, right: bzd, leftValue: 1, rightValue: 2)
         
-        let (convertedCurrency, convertedValue) = quote.convert(from: bzd, value: 10)!
+        let convertedCurrencyValue = quote.convert(from: bzd, value: 10)!
         
-        XCTAssertEqual(usd, convertedCurrency)
-        XCTAssertEqual(5, convertedValue)
+        XCTAssertEqual(usd, convertedCurrencyValue.currency)
+        XCTAssertEqual(5, convertedCurrencyValue.value)
     }
     
     func testConvertFailed() {

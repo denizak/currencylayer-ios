@@ -22,14 +22,48 @@ final class ComputeExchangeRateTest: XCTestCase {
                   leftValue: 1, rightValue: 10),
             Quote(left: usd,
                   right: eur,
-                  leftValue: 1, rightValue: 20)
+                  leftValue: 1, rightValue: 20),
+            Quote(left: usd,
+                  right: usd,
+                  leftValue: 1, rightValue: 1)
         ]
         
         let computeExchangeRate = ComputeExchangeRate(quotes: quotes, baseCurrency: baseCurrency)
         
         let results = computeExchangeRate.convert(from: gbp, value: 100)
         
+        XCTAssertEqual(results.count, 2)
+        XCTAssertEqual(results[0].currency, eur)
+        XCTAssertEqual(results[1].currency, usd)
         
+        XCTAssertEqual(results[0].value, 200)
+        XCTAssertEqual(results[1].value, 10)
+    }
+    
+    func testConvertFromBaseCurrency() {
+        let baseCurrency = usd
+        let quotes = [
+            Quote(left: usd,
+                  right: gbp,
+                  leftValue: 1, rightValue: 10),
+            Quote(left: usd,
+                  right: eur,
+                  leftValue: 1, rightValue: 20),
+            Quote(left: usd,
+                  right: usd,
+                  leftValue: 1, rightValue: 1)
+        ]
+        
+        let computeExchangeRate = ComputeExchangeRate(quotes: quotes, baseCurrency: baseCurrency)
+        
+        let results = computeExchangeRate.convert(from: usd, value: 1)
+        
+        XCTAssertEqual(results.count, 2)
+        XCTAssertEqual(results[0].currency, gbp)
+        XCTAssertEqual(results[1].currency, eur)
+        
+        XCTAssertEqual(results[0].value, 10)
+        XCTAssertEqual(results[1].value, 20)
     }
 
 }

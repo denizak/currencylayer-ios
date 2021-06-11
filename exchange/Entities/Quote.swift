@@ -15,13 +15,13 @@ struct Quote {
 }
 
 extension Quote {
-    func convert(from: Currency, value: Decimal) -> (Currency, Decimal)? {
+    func convert(from: Currency, value: Decimal) -> CurrencyValue? {
         if from == left {
             let convertedValue = value / leftValue * rightValue
-            return (right, convertedValue)
+            return CurrencyValue(currency: right, value: convertedValue)
         } else if from == right {
             let convertedValue = value / rightValue * leftValue
-            return (left, convertedValue)
+            return CurrencyValue(currency: left, value: convertedValue)
         } else {
             return nil
         }
