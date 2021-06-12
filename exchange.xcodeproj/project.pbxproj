@@ -25,6 +25,7 @@
 		605FB6DC267507F900AD64A9 /* ExchangeRateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605FB6DB267507F900AD64A9 /* ExchangeRateViewModel.swift */; };
 		605FB6DE26750C6700AD64A9 /* ExchangeRateViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605FB6DD26750C6700AD64A9 /* ExchangeRateViewModelFactory.swift */; };
 		605FB6E026750D9300AD64A9 /* ExchangeRateViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605FB6DF26750D9300AD64A9 /* ExchangeRateViewModelTest.swift */; };
+		605FB6E2267510E000AD64A9 /* readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 605FB6E1267510E000AD64A9 /* readme.md */; };
 		60AAD6C22673B13000B550FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C12673B13000B550FC /* AppDelegate.swift */; };
 		60AAD6C42673B13000B550FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C32673B13000B550FC /* SceneDelegate.swift */; };
 		60AAD6C62673B13000B550FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C52673B13000B550FC /* ViewController.swift */; };
@@ -62,6 +63,7 @@
 		605FB6DB267507F900AD64A9 /* ExchangeRateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateViewModel.swift; sourceTree = "<group>"; };
 		605FB6DD26750C6700AD64A9 /* ExchangeRateViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateViewModelFactory.swift; sourceTree = "<group>"; };
 		605FB6DF26750D9300AD64A9 /* ExchangeRateViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateViewModelTest.swift; sourceTree = "<group>"; };
+		605FB6E1267510E000AD64A9 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		60AAD6BE2673B13000B550FC /* exchange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = exchange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60AAD6C12673B13000B550FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		60AAD6C32673B13000B550FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				60AAD6CA2673B13100B550FC /* Assets.xcassets */,
 				60AAD6CC2673B13100B550FC /* LaunchScreen.storyboard */,
 				60AAD6CF2673B13100B550FC /* Info.plist */,
+				605FB6E1267510E000AD64A9 /* readme.md */,
 			);
 			path = exchange;
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 			files = (
 				60AAD6CE2673B13100B550FC /* LaunchScreen.storyboard in Resources */,
 				60AAD6CB2673B13100B550FC /* Assets.xcassets in Resources */,
+				605FB6E2267510E000AD64A9 /* readme.md in Resources */,
 				60AAD6C92673B13000B550FC /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
