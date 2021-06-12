@@ -14,6 +14,8 @@ struct Quote {
     let rightValue: Decimal
 }
 
+extension Quote: Equatable {}
+
 extension Quote {
     func convert(from: Currency, value: Decimal) -> CurrencyValue? {
         if from == left {

@@ -7,7 +7,13 @@
 
 import Foundation
 
-struct Currency: Equatable {
+struct Currency {
     let code: String
     let name: String
+}
+
+extension Currency: Equatable {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.code == rhs.code
+    }
 }

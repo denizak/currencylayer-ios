@@ -18,6 +18,8 @@
 		605680CF2673D21F008154B4 /* SupportedCurrencyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680CE2673D21F008154B4 /* SupportedCurrencyResponse.swift */; };
 		605680D12673D3F3008154B4 /* ExchangeRateApiTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680D02673D3F3008154B4 /* ExchangeRateApiTest.swift */; };
 		605680D32673D71A008154B4 /* LiveDataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680D22673D71A008154B4 /* LiveDataResponse.swift */; };
+		605680D52674CF21008154B4 /* ExchangeRateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680D42674CF21008154B4 /* ExchangeRateStore.swift */; };
+		605680D72674CFFA008154B4 /* ExchangeRateStoreTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680D62674CFFA008154B4 /* ExchangeRateStoreTest.swift */; };
 		60AAD6C22673B13000B550FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C12673B13000B550FC /* AppDelegate.swift */; };
 		60AAD6C42673B13000B550FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C32673B13000B550FC /* SceneDelegate.swift */; };
 		60AAD6C62673B13000B550FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C52673B13000B550FC /* ViewController.swift */; };
@@ -56,6 +58,8 @@
 		605680CE2673D21F008154B4 /* SupportedCurrencyResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportedCurrencyResponse.swift; sourceTree = "<group>"; };
 		605680D02673D3F3008154B4 /* ExchangeRateApiTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateApiTest.swift; sourceTree = "<group>"; };
 		605680D22673D71A008154B4 /* LiveDataResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveDataResponse.swift; sourceTree = "<group>"; };
+		605680D42674CF21008154B4 /* ExchangeRateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateStore.swift; sourceTree = "<group>"; };
+		605680D62674CFFA008154B4 /* ExchangeRateStoreTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateStoreTest.swift; sourceTree = "<group>"; };
 		60AAD6BE2673B13000B550FC /* exchange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = exchange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60AAD6C12673B13000B550FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		60AAD6C32673B13000B550FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -121,6 +125,7 @@
 				605680CC2673CFEF008154B4 /* ExchangeRateApi.swift */,
 				605680CE2673D21F008154B4 /* SupportedCurrencyResponse.swift */,
 				605680D22673D71A008154B4 /* LiveDataResponse.swift */,
+				605680D42674CF21008154B4 /* ExchangeRateStore.swift */,
 			);
 			path = Adapter;
 			sourceTree = "<group>";
@@ -169,6 +174,7 @@
 				600A0A7C2673B2B40036E848 /* QuoteTest.swift */,
 				605680C22673B7EE008154B4 /* ComputeExchangeRateTest.swift */,
 				605680D02673D3F3008154B4 /* ExchangeRateApiTest.swift */,
+				605680D62674CFFA008154B4 /* ExchangeRateStoreTest.swift */,
 			);
 			path = exchangeTests;
 			sourceTree = "<group>";
@@ -314,6 +320,7 @@
 			files = (
 				600A0A762673B1CC0036E848 /* Currency.swift in Sources */,
 				60AAD6C62673B13000B550FC /* ViewController.swift in Sources */,
+				605680D52674CF21008154B4 /* ExchangeRateStore.swift in Sources */,
 				605680C52673B991008154B4 /* ComputeExchangeRate.swift in Sources */,
 				605680D32673D71A008154B4 /* LiveDataResponse.swift in Sources */,
 				60AAD6C22673B13000B550FC /* AppDelegate.swift in Sources */,
@@ -332,6 +339,7 @@
 			files = (
 				605680C32673B7EE008154B4 /* ComputeExchangeRateTest.swift in Sources */,
 				605680D12673D3F3008154B4 /* ExchangeRateApiTest.swift in Sources */,
+				605680D72674CFFA008154B4 /* ExchangeRateStoreTest.swift in Sources */,
 				600A0A7D2673B2B40036E848 /* QuoteTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
