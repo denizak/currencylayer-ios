@@ -8,5 +8,5 @@
 import Foundation
 
 func createExchangeRateProvider() -> ExchangeRateProvider {
-    ExchangeRateProvider(storage: ExchangeRateStoreImpl(), api: ExchangeRateApiImpl())
+    ExchangeRateProviderImpl(storage: ExchangeRateStoreImpl(), api: ExchangeRateApiImpl())
 }

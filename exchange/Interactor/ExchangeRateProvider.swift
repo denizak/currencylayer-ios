@@ -7,7 +7,14 @@
 
 import Foundation
 
-final class ExchangeRateProvider {
+protocol ExchangeRateProvider {
+    var availableCurrencies: [Currency] { get }
+    func load(onComplete: @escaping () -> ())
+    func fetchConvertedCurrencies(from currency: Currency, value: Decimal,
+                                  completion: @escaping ([CurrencyValue]) -> ())
+}
+
+final class ExchangeRateProviderImpl: ExchangeRateProvider {
     
     private let storage: ExchangeRateStore
     private let api: ExchangeRateApi

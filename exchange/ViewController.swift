@@ -15,9 +15,21 @@ final class ViewController: UIViewController {
     @IBOutlet weak var currencyList: UITableView!
     @IBOutlet weak var currencyPickerContainer: UIView!
     
-    let exchangeRateProvider = createExchangeRateProvider()
-    var selectedCurrency = Currency(code: "USD", name: "United States Dollar")
+    let viewModel = createExchangeRateViewModel()
     var convertedCurrencies: [CurrencyValue] = []
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        viewModel.onValueLoaded = { [weak self] results in
+            self?.convertedCurrencies = results
+            DispatchQueue.main.async {
+                self?.currencyList.reloadData()
+            }
+        }
+        
+        viewModel.viewLoad()
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -39,21 +51,7 @@ final class ViewController: UIViewController {
     }
     
     private func load(value: String) {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.locale = Locale.current
-        if let number = numberFormatter.number(from: value) {
-            exchangeRateProvider.fetchConvertedCurrencies(
-                from: selectedCurrency,
-                value: number.decimalValue) { [weak self] results in
-                self?.convertedCurrencies = results
-                DispatchQueue.main.async {
-                    self?.currencyList.reloadData()
-                }
-            }
-        } else {
-            convertedCurrencies = []
-            currencyList.reloadData()
-        }
+        viewModel.load(value: value)
     }
 }
 
@@ -63,17 +61,17 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return exchangeRateProvider.availableCurrencies[row].code
+        return viewModel.availableCurrencies[row].code
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        exchangeRateProvider.availableCurrencies.count
+        viewModel.availableCurrencies.count
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        guard exchangeRateProvider.availableCurrencies.count > 0 else { return }
-        selectedCurrency = exchangeRateProvider.availableCurrencies[row]
-        currencyButton.setTitle(selectedCurrency.code, for: .normal)
+        guard let currency = viewModel.select(at: row) else { return }
+        
+        currencyButton.setTitle(currency.code, for: .normal)
         load(value: value.text ?? "")
     }
 }

@@ -14,7 +14,7 @@ final class ExchangeRateProviderTest: XCTestCase {
         let expectationLoad = expectation(description: #function)
         let storage = StorageSpy()
         let api = APISpy()
-        let provider = ExchangeRateProvider(storage: storage, api: api)
+        let provider = ExchangeRateProviderImpl(storage: storage, api: api)
         
         provider.load {
             XCTAssertGreaterThan(storage.currencies.count, 0)
@@ -38,7 +38,7 @@ final class ExchangeRateProviderTest: XCTestCase {
                                 right: Currency(code: "AAA", name: ""),
                                 leftValue: 1,
                                 rightValue: 1)]
-        let provider = ExchangeRateProvider(storage: storage, api: api)
+        let provider = ExchangeRateProviderImpl(storage: storage, api: api)
         
         provider.fetchConvertedCurrencies(from: Currency(code: "BBB", name: ""),
                                           value: 1) { results in
@@ -54,7 +54,7 @@ final class ExchangeRateProviderTest: XCTestCase {
         let expectationTest = expectation(description: #function)
         let api = APISpy()
         let storage = StorageSpy()
-        let provider = ExchangeRateProvider(storage: storage, api: api)
+        let provider = ExchangeRateProviderImpl(storage: storage, api: api)
         
         provider.fetchConvertedCurrencies(from: Currency(code: "AAA", name: ""),
                                           value: 1) { results in
@@ -69,7 +69,7 @@ final class ExchangeRateProviderTest: XCTestCase {
     func testAvailableCurrencies() {
         let storage = StorageSpy()
         storage.currencies = [Currency(code: "AAA", name: "")]
-        let provider = ExchangeRateProvider(storage: storage, api: APIDummy())
+        let provider = ExchangeRateProviderImpl(storage: storage, api: APIDummy())
         
         let actualCurrencies = provider.availableCurrencies
         
