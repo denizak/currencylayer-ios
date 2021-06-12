@@ -13,7 +13,7 @@ final class ExchangeRateApiTest: XCTestCase {
 
     func testGetAvailableCurrencies() {
         let getAvailableCurrencyExpectation = expectation(description: #function)
-        let api = ExchangeRateApi()
+        let api = ExchangeRateApiImpl()
         
         api.getAvailableCurrencies { currencies in
             XCTAssertGreaterThan(currencies.count, 0)
@@ -25,7 +25,7 @@ final class ExchangeRateApiTest: XCTestCase {
     
     func testGetLiveData() {
         let getLiveDataExpectation = expectation(description: #function)
-        let api = ExchangeRateApi()
+        let api = ExchangeRateApiImpl()
         
         api.getLiveData { quotes, sourceCurrency, timestamp in
             XCTAssertGreaterThan(quotes.count, 0)

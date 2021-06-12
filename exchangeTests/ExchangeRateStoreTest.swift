@@ -19,7 +19,7 @@ final class ExchangeRateStoreTest: XCTestCase {
                   right: eur,
                   leftValue: 1, rightValue: 10)
         ]
-        let storage = ExchangeRateStore()
+        let storage = ExchangeRateStoreImpl()
         
         storage.store(
             quotes: [

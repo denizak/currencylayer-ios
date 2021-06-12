@@ -7,7 +7,18 @@
 
 import Foundation
 
-struct ExchangeRateApi {
+protocol ExchangeRateApi {
+    func getAvailableCurrencies(completion: @escaping ([Currency]) -> ())
+    func getLiveData(source: String, completion: @escaping ([Quote], Currency?, Date?) -> ())
+}
+
+extension ExchangeRateApi {
+    func getLiveData(completion: @escaping ([Quote], Currency?, Date?) -> ()) {
+        getLiveData(source: "USD", completion: completion)
+    }
+}
+
+struct ExchangeRateApiImpl: ExchangeRateApi {
     let baseUrl = "http://api.currencylayer.com"
     let accessKey = "39d434a114eeceb94f0b4996307e8dcd"
     
@@ -37,7 +48,7 @@ struct ExchangeRateApi {
         dataTask.resume()
     }
     
-    func getLiveData(source: String = "USD", completion: @escaping ([Quote], Currency?, Date?) -> ()) {
+    func getLiveData(source: String, completion: @escaping ([Quote], Currency?, Date?) -> ()) {
         var urlComponents = URLComponents(string: baseUrl)
         urlComponents?.path = "/live"
         urlComponents?.queryItems = [.init(name: "format", value: "1"),

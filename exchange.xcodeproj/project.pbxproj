@@ -20,6 +20,8 @@
 		605680D32673D71A008154B4 /* LiveDataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680D22673D71A008154B4 /* LiveDataResponse.swift */; };
 		605680D52674CF21008154B4 /* ExchangeRateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680D42674CF21008154B4 /* ExchangeRateStore.swift */; };
 		605680D72674CFFA008154B4 /* ExchangeRateStoreTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680D62674CFFA008154B4 /* ExchangeRateStoreTest.swift */; };
+		605680D92674F54F008154B4 /* ExchangeRateProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680D82674F54F008154B4 /* ExchangeRateProviderFactory.swift */; };
+		605680DB2674F59A008154B4 /* ExchangeRateProviderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605680DA2674F59A008154B4 /* ExchangeRateProviderTest.swift */; };
 		60AAD6C22673B13000B550FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C12673B13000B550FC /* AppDelegate.swift */; };
 		60AAD6C42673B13000B550FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C32673B13000B550FC /* SceneDelegate.swift */; };
 		60AAD6C62673B13000B550FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAD6C52673B13000B550FC /* ViewController.swift */; };
@@ -60,6 +62,8 @@
 		605680D22673D71A008154B4 /* LiveDataResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveDataResponse.swift; sourceTree = "<group>"; };
 		605680D42674CF21008154B4 /* ExchangeRateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateStore.swift; sourceTree = "<group>"; };
 		605680D62674CFFA008154B4 /* ExchangeRateStoreTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateStoreTest.swift; sourceTree = "<group>"; };
+		605680D82674F54F008154B4 /* ExchangeRateProviderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateProviderFactory.swift; sourceTree = "<group>"; };
+		605680DA2674F59A008154B4 /* ExchangeRateProviderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateProviderTest.swift; sourceTree = "<group>"; };
 		60AAD6BE2673B13000B550FC /* exchange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = exchange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60AAD6C12673B13000B550FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		60AAD6C32673B13000B550FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -115,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				605680C82673C079008154B4 /* ExchangeRateProvider.swift */,
+				605680D82674F54F008154B4 /* ExchangeRateProviderFactory.swift */,
 			);
 			path = Interactor;
 			sourceTree = "<group>";
@@ -175,6 +180,7 @@
 				605680C22673B7EE008154B4 /* ComputeExchangeRateTest.swift */,
 				605680D02673D3F3008154B4 /* ExchangeRateApiTest.swift */,
 				605680D62674CFFA008154B4 /* ExchangeRateStoreTest.swift */,
+				605680DA2674F59A008154B4 /* ExchangeRateProviderTest.swift */,
 			);
 			path = exchangeTests;
 			sourceTree = "<group>";
@@ -328,6 +334,7 @@
 				60AAD6C42673B13000B550FC /* SceneDelegate.swift in Sources */,
 				605680CF2673D21F008154B4 /* SupportedCurrencyResponse.swift in Sources */,
 				605680C72673BDDC008154B4 /* CurrencyValue.swift in Sources */,
+				605680D92674F54F008154B4 /* ExchangeRateProviderFactory.swift in Sources */,
 				605680C92673C079008154B4 /* ExchangeRateProvider.swift in Sources */,
 				605680CD2673CFEF008154B4 /* ExchangeRateApi.swift in Sources */,
 			);
@@ -341,6 +348,7 @@
 				605680D12673D3F3008154B4 /* ExchangeRateApiTest.swift in Sources */,
 				605680D72674CFFA008154B4 /* ExchangeRateStoreTest.swift in Sources */,
 				600A0A7D2673B2B40036E848 /* QuoteTest.swift in Sources */,
+				605680DB2674F59A008154B4 /* ExchangeRateProviderTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

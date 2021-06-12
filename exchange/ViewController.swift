@@ -15,7 +15,7 @@ final class ViewController: UIViewController {
     @IBOutlet weak var currencyList: UITableView!
     @IBOutlet weak var currencyPickerContainer: UIView!
     
-    let exchangeRateProvider = ExchangeRateProvider()
+    let exchangeRateProvider = createExchangeRateProvider()
     var selectedCurrency = Currency(code: "USD", name: "United States Dollar")
     var convertedCurrencies: [CurrencyValue] = []
     
@@ -26,6 +26,7 @@ final class ViewController: UIViewController {
 
     @IBAction func changeCurrency(_ sender: Any) {
         currencyPickerContainer.isHidden = false
+        currencyPicker.reloadAllComponents()
         value.resignFirstResponder()
     }
     
@@ -41,12 +42,18 @@ final class ViewController: UIViewController {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = Locale.current
         if let number = numberFormatter.number(from: value) {
-            convertedCurrencies = exchangeRateProvider
-                .getConvertedCurrencies(from: selectedCurrency, value: number.decimalValue)
+            exchangeRateProvider.fetchConvertedCurrencies(
+                from: selectedCurrency,
+                value: number.decimalValue) { [weak self] results in
+                self?.convertedCurrencies = results
+                DispatchQueue.main.async {
+                    self?.currencyList.reloadData()
+                }
+            }
         } else {
             convertedCurrencies = []
+            currencyList.reloadData()
         }
-        currencyList.reloadData()
     }
 }
 
@@ -64,6 +71,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        guard exchangeRateProvider.availableCurrencies.count > 0 else { return }
         selectedCurrency = exchangeRateProvider.availableCurrencies[row]
         currencyButton.setTitle(selectedCurrency.code, for: .normal)
         load(value: value.text ?? "")
@@ -99,7 +107,8 @@ extension ViewController: UITableViewDataSource {
         
         let convertedCurrencyValue = convertedCurrencies[indexPath.row]
         cell!.textLabel?.text = convertedCurrencyValue.currency.code
-        cell!.detailTextLabel?.text = "\(convertedCurrencyValue.value)"
+        cell!.detailTextLabel?.text = String(format: "%.4f",
+                                             (convertedCurrencyValue.value as NSDecimalNumber).doubleValue)
         
         return cell!
     }
