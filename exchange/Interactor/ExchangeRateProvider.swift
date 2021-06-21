@@ -6,12 +6,12 @@
 //
 
 import Foundation
+import RxSwift
 
 protocol ExchangeRateProvider {
     var availableCurrencies: [Currency] { get }
-    func load(onComplete: @escaping () -> ())
-    func fetchConvertedCurrencies(from currency: Currency, value: Decimal,
-                                  completion: @escaping ([CurrencyValue]) -> ())
+    func load() -> Observable<()>
+    func fetchConvertedCurrencies(from currency: Currency, value: Decimal) -> Observable<[CurrencyValue]>
 }
 
 final class ExchangeRateProviderImpl: ExchangeRateProvider {
@@ -30,46 +30,38 @@ final class ExchangeRateProviderImpl: ExchangeRateProvider {
         }
     }
     
-    func load(onComplete: @escaping () -> ()) {
-        var isLiveDataComplete = false
-        var isAvailableCurrenciesComplete = false
-        func completeApiCall() {
-            if isLiveDataComplete && isAvailableCurrenciesComplete {
-                onComplete()
-            }
-        }
-        
+    func load() -> Observable<()> {
         let interval = storage.timestamp?.timeIntervalSinceNow
         guard interval == nil || abs(Int(interval!)) > 30.minute
-        else { return }
+        else { return .empty() }
         
-        api.getLiveData { [weak self] quotes, currency, timestamp in
-            guard let currency = currency, let timestamp = timestamp else { return }
-            self?.storage.store(quotes: quotes, timestamp: timestamp, source: currency)
-            
-            isLiveDataComplete = true
-            completeApiCall()
-        }
-        
-        api.getAvailableCurrencies { [weak self] currencies in
-            self?.storage.store(currencies: currencies)
-            
-            isAvailableCurrenciesComplete = true
-            completeApiCall()
-        }
+        return Observable.zip(
+            api.getLiveData()
+                .do(onSuccess: { [weak self] quotes, currency, timestamp in
+                    self?.storage.store(quotes: quotes, timestamp: timestamp, source: currency)
+                })
+                .asObservable(),
+            api.getAvailableCurrencies()
+                .do(onSuccess: { [weak self] currencies in
+                    self?.storage.store(currencies: currencies)
+                })
+                .asObservable()
+        )
+        .map { _ in }
     }
     
-    func fetchConvertedCurrencies(from currency: Currency, value: Decimal,
-                                  completion: @escaping ([CurrencyValue]) -> ()) {
+    func fetchConvertedCurrencies(from currency: Currency, value: Decimal)
+    -> Observable<[CurrencyValue]> {
         if let _ = storage.source, storage.quotes.count > 0 {
             let results = computeConversion(from: currency, value: value)
-            completion(results)
+            return .just(results)
         } else {
-            load { [weak self] in
-                guard let results = self?.computeConversion(from: currency, value: value)
-                else { return }
-                completion(results)
-            }
+            return load()
+                .map { [weak self] _ in
+                    guard let results = self?.computeConversion(from: currency, value: value)
+                    else { return [] }
+                    return results
+                }
         }
     }
     

@@ -6,77 +6,67 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
+
+enum APIError: Error {
+    case URLError
+}
 
 protocol ExchangeRateApi {
-    func getAvailableCurrencies(completion: @escaping ([Currency]) -> ())
-    func getLiveData(source: String, completion: @escaping ([Quote], Currency?, Date?) -> ())
+    func getAvailableCurrencies() -> Single<[Currency]>
+    func getLiveData(source: String) -> Single<([Quote], Currency, Date)>
 }
 
 extension ExchangeRateApi {
-    func getLiveData(completion: @escaping ([Quote], Currency?, Date?) -> ()) {
-        getLiveData(source: "USD", completion: completion)
+    func getLiveData() -> Single<([Quote], Currency, Date)> {
+        getLiveData(source: "USD")
     }
 }
 
 struct ExchangeRateApiImpl: ExchangeRateApi {
-    let baseUrl = "http://api.currencylayer.com"
+    let baseUrl = "http://apilayer.net/api"
     let accessKey = "39d434a114eeceb94f0b4996307e8dcd"
     
-    func getAvailableCurrencies(completion: @escaping ([Currency]) -> ()) {
+    func getAvailableCurrencies() -> Single<[Currency]> {
         var urlComponents = URLComponents(string: baseUrl)
         urlComponents?.path = "/list"
         urlComponents?.queryItems = [.init(name: "format", value: "1"),
                                      .init(name: "access_key", value: accessKey)]
         guard let url = urlComponents?.url
-        else { completion([]); return }
+        else { return .error(APIError.URLError) }
         
-        let dataTask = URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data, error == nil {
-                do {
-                    let responseData = try JSONDecoder().decode(SupportedCurrencyResponse.self,
-                                                                from: data)
-                    let currencies = responseData.success ? currencies(from: responseData.currencies) : []
-                    
-                    completion(currencies)
-                } catch {
-                    completion([])
-                }
-            } else {
-                completion([])
+        return URLSession.shared.rx.data(request: URLRequest(url: url))
+            .map { data in
+                let responseData = try JSONDecoder().decode(SupportedCurrencyResponse.self,
+                                                            from: data)
+                return responseData.success ? currencies(from: responseData.currencies) : []
             }
-        }
-        dataTask.resume()
+            .take(1)
+            .asSingle()
     }
     
-    func getLiveData(source: String, completion: @escaping ([Quote], Currency?, Date?) -> ()) {
+    func getLiveData(source: String) -> Single<([Quote], Currency, Date)> {
         var urlComponents = URLComponents(string: baseUrl)
         urlComponents?.path = "/live"
         urlComponents?.queryItems = [.init(name: "format", value: "1"),
                                      .init(name: "access_key", value: accessKey)]
         guard let url = urlComponents?.url
-        else { completion([], nil, nil); return }
+        else { return .error(APIError.URLError) }
         
-        let dataTask = URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data, error == nil {
-                do {
-                    let responseData = try JSONDecoder().decode(LiveDataResponse.self,
-                                                                from: data)
-                    
-                    let quotes = responseData.success ? quotes(from: responseData.quotes) : []
-                    
-                    completion(quotes,
-                               Currency(code: responseData.source, name: ""),
-                               Date(timeIntervalSince1970: TimeInterval(responseData.timestamp)))
-                } catch {
-                    completion([], nil, nil)
-                }
-            } else {
-                completion([], nil, nil)
+        return URLSession.shared.rx.data(request: URLRequest(url: url))
+            .map { data -> ([Quote], Currency, Date) in
+                let responseData = try JSONDecoder().decode(LiveDataResponse.self,
+                                                            from: data)
+                
+                let quotes = responseData.success ? quotes(from: responseData.quotes) : []
+                return (quotes,
+                        Currency(code: responseData.source, name: ""),
+                        Date(timeIntervalSince1970: TimeInterval(responseData.timestamp)))
             }
-        }
-        dataTask.resume()
+            .take(1)
+            .asSingle()
     }
-    
 }
 
 private func quotes(from values: [String: Decimal]) -> [Quote] {

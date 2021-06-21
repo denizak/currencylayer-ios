@@ -6,35 +6,29 @@
 //
 
 import XCTest
+import RxSwift
+import RxBlocking
 
 @testable import exchange
 
 final class ExchangeRateApiTest: XCTestCase {
 
-    func testGetAvailableCurrencies() {
-        let getAvailableCurrencyExpectation = expectation(description: #function)
+    func testGetAvailableCurrencies() throws {
         let api = ExchangeRateApiImpl()
         
-        api.getAvailableCurrencies { currencies in
-            XCTAssertGreaterThan(currencies.count, 0)
-            getAvailableCurrencyExpectation.fulfill()
-        }
+        let results = try api.getAvailableCurrencies().toBlocking().first()!
         
-        waitForExpectations(timeout: 10, handler: nil)
+        XCTAssertGreaterThan(results.count, 0)
     }
     
-    func testGetLiveData() {
-        let getLiveDataExpectation = expectation(description: #function)
+    func testGetLiveData() throws {
         let api = ExchangeRateApiImpl()
         
-        api.getLiveData { quotes, sourceCurrency, timestamp in
-            XCTAssertGreaterThan(quotes.count, 0)
-            XCTAssertEqual(sourceCurrency?.code, "USD")
-            XCTAssertNotNil(timestamp)
-            getLiveDataExpectation.fulfill()
-        }
+        let (quotes, source, timestamp) = try api.getLiveData().toBlocking().first()!
         
-        waitForExpectations(timeout: 10, handler: nil)
+        XCTAssertGreaterThan(quotes.count, 0)
+        XCTAssertEqual(source.code, "USD")
+        XCTAssertNotNil(timestamp)
     }
 
 }

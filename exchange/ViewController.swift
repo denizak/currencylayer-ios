@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class ViewController: UIViewController {
 
@@ -14,26 +16,41 @@ final class ViewController: UIViewController {
     @IBOutlet weak var currencyButton: UIButton!
     @IBOutlet weak var currencyList: UITableView!
     @IBOutlet weak var currencyPickerContainer: UIView!
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     
     let viewModel = createExchangeRateViewModel()
-    var convertedCurrencies: [CurrencyValue] = []
+    
+    private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel.onValueLoaded = { [weak self] results in
-            self?.convertedCurrencies = results
-            DispatchQueue.main.async {
-                self?.currencyList.reloadData()
-            }
-        }
+        viewModel.loadingVisible.map { !$0 }
+            .drive()
+            .disposed(by: disposeBag)
         
-        viewModel.viewLoad()
-    }
+        viewModel.values.drive(
+            currencyList.rx
+                .items(cellIdentifier: "Cell",
+                       cellType: UITableViewCell.self)) { (row, item, cell) in
+            cell.textLabel?.text = item.currency.code
+            cell.detailTextLabel?.text =
+                String(format: "%.4f", (item.value as NSDecimalNumber).doubleValue)
+        }.disposed(by: disposeBag)
+        
+        viewModel.loadingVisible
+            .map { !$0 }
+            .drive(loadingIndicator.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        value.rx.text.changed
+            .compactMap { $0 }
+            .subscribe(onNext: { [weak self] value in
+                self?.viewModel.numberValue.accept(value)
+            })
+            .disposed(by: disposeBag)
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        load(value: value.text ?? "")
+        viewModel.viewLoad()
     }
 
     @IBAction func changeCurrency(_ sender: Any) {
@@ -48,10 +65,6 @@ final class ViewController: UIViewController {
         } else if !currencyPicker.isHidden {
             currencyPickerContainer.isHidden = true
         }
-    }
-    
-    private func load(value: String) {
-        viewModel.load(value: value)
     }
 }
 
@@ -72,45 +85,17 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         guard let currency = viewModel.select(at: row) else { return }
         
         currencyButton.setTitle(currency.code, for: .normal)
-        load(value: value.text ?? "")
     }
 }
 
 extension ViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
-        let currentText = textField.text ?? ""
-        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
-        
-        load(value: updatedText)
         return true
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         currencyPickerContainer.isHidden = true
     }
-}
-
-extension ViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return convertedCurrencies.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = "Cell"
-        var cell = tableView.dequeueReusableCell(withIdentifier: identifier)
-        if cell == nil {
-            cell = UITableViewCell(style: .value1, reuseIdentifier: identifier)
-        }
-        
-        let convertedCurrencyValue = convertedCurrencies[indexPath.row]
-        cell!.textLabel?.text = convertedCurrencyValue.currency.code
-        cell!.detailTextLabel?.text = String(format: "%.4f",
-                                             (convertedCurrencyValue.value as NSDecimalNumber).doubleValue)
-        
-        return cell!
-    }
-    
-    
 }
 

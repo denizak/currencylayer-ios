@@ -6,13 +6,26 @@
 //
 
 import Foundation
+import RxSwift
+import RxRelay
+import RxCocoa
 
 final class ExchangeRateViewModel {
     private(set) var selectedCurrency = Currency(code: "USD", name: "United States Dollar")
     private(set) var availableCurrencies: [Currency] = []
     
-    var onViewLoad: () -> () = { }
-    var onValueLoaded: ([CurrencyValue]) -> () = { _ in }
+    let numberValue = BehaviorRelay<String>(value: "")
+    var loadingVisible: Driver<Bool> {
+        loadingVisibility.asDriver(onErrorJustReturn: false)
+    }
+    private let loadingVisibility = PublishRelay<Bool>()
+    
+    var values: Driver<[CurrencyValue]> {
+        convertedValues.asDriver(onErrorJustReturn: [])
+    }
+    private let convertedValues = PublishRelay<[CurrencyValue]>()
+    
+    private let disposeBag = DisposeBag()
     
     private let exchangeRateProvider: ExchangeRateProvider
     
@@ -23,28 +36,38 @@ final class ExchangeRateViewModel {
     func select(at currencyIndex: Int) -> Currency? {
         guard currencyIndex < availableCurrencies.count else { return nil }
         selectedCurrency = availableCurrencies[currencyIndex]
+        load(numberValue.value)
         
         return selectedCurrency
     }
     
     func viewLoad() {
-        self.exchangeRateProvider.load { [weak self] in
+        loadingVisibility.accept(true)
+        
+        exchangeRateProvider.load().subscribe { [weak self] _ in
+            self?.loadingVisibility.accept(false)
+        } onCompleted: { [weak self] in
             self?.availableCurrencies = self?.exchangeRateProvider.availableCurrencies ?? []
-            self?.onViewLoad()
+        }.disposed(by: disposeBag)
+        
+        numberValue.map { [weak self] value in
+            self?.load(value)
         }
+        .subscribe().disposed(by: disposeBag)
     }
     
-    func load(value: String) {
+    private func load(_ value: String) {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = Locale.current
         if let number = numberFormatter.number(from: value) {
-            exchangeRateProvider.fetchConvertedCurrencies(
-                from: selectedCurrency,
-                value: number.decimalValue) { [weak self] results in
-                self?.onValueLoaded(results)
-            }
+            exchangeRateProvider.fetchConvertedCurrencies(from: self.selectedCurrency,
+                                                          value: number.decimalValue)
+                .subscribe { [weak self] values in
+                    self?.convertedValues.accept(values)
+                }
+                .disposed(by: self.disposeBag)
         } else {
-            onValueLoaded([])
+            convertedValues.accept([])
         }
     }
 }

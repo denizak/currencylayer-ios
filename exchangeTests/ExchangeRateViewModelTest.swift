@@ -6,68 +6,59 @@
 //
 
 import XCTest
+import RxSwift
+import RxRelay
+import RxCocoa
 
 @testable import exchange
 final class ExchangeRateViewModelTest: XCTestCase {
 
     func testViewLoad() {
-        let expectationLoad = expectation(description: #function)
         let viewModel = ExchangeRateViewModel(provider: ExchangeRateProviderMock())
-        
-        viewModel.onViewLoad = {
-            XCTAssertGreaterThan(viewModel.availableCurrencies.count, 0)
-            expectationLoad.fulfill()
-        }
-        
+
+        viewModel.viewLoad()
+
+        XCTAssertGreaterThan(viewModel.availableCurrencies.count, 0)
+    }
+
+    func testValueChanged() {
+        let viewModel = ExchangeRateViewModel(provider: ExchangeRateProviderMock())
+        let observer = BehaviorRelay<[CurrencyValue]>(value: [])
+        let disposable = viewModel.values.drive(observer)
+        defer { disposable.dispose() }
         viewModel.viewLoad()
         
-        wait(for: [expectationLoad], timeout: 1)
+        viewModel.numberValue.accept("1")
+
+        XCTAssertGreaterThan(observer.value.count, 0)
     }
-    
-    func testLoad() {
-        let expectationLoad = expectation(description: #function)
-        let viewModel = ExchangeRateViewModel(provider: ExchangeRateProviderMock())
-        
-        viewModel.onValueLoaded = { results in
-            XCTAssertGreaterThan(results.count, 0)
-            expectationLoad.fulfill()
-        }
-        
-        viewModel.load(value: "1")
-        
-        wait(for: [expectationLoad], timeout: 1)
-    }
-    
+
     func testLoadFailedParseValue() {
-        let expectationLoad = expectation(description: #function)
         let viewModel = ExchangeRateViewModel(provider: ExchangeRateProviderMock())
+        let observer = BehaviorRelay<[CurrencyValue]>(value: [])
+        let disposable = viewModel.values.drive(observer)
+        defer { disposable.dispose() }
+        viewModel.viewLoad()
         
-        viewModel.onValueLoaded = { results in
-            XCTAssertEqual(results.count, 0)
-            expectationLoad.fulfill()
-        }
-        
-        viewModel.load(value: "")
-        
-        wait(for: [expectationLoad], timeout: 1)
+        viewModel.numberValue.accept("")
+
+        XCTAssertEqual(observer.value.count, 0)
     }
 
 }
 
 final class ExchangeRateProviderMock: ExchangeRateProvider {
-    var availableCurrencies: [Currency] = [Currency(code: "USD", name: "")]
+    var availableCurrencies: [Currency] = []
     
-    func load(onComplete: @escaping () -> ()) {
-        onComplete()
+    func load() -> Observable<()> {
+        availableCurrencies = [Currency(code: "USD", name: "")]
+        return .just(())
     }
     
-    func fetchConvertedCurrencies(from currency: Currency, value: Decimal, completion: @escaping ([CurrencyValue]) -> ()) {
-        completion(
-            [
-                CurrencyValue(currency: Currency(code: "AAA", name: ""),
-                              value: 1)
-            ])
+    func fetchConvertedCurrencies(from currency: Currency, value: Decimal) -> Observable<[CurrencyValue]> {
+        .just([
+            CurrencyValue(currency: Currency(code: "AAA", name: ""),
+                          value: 1)
+        ])
     }
-    
-    
 }

@@ -6,31 +6,27 @@
 //
 
 import XCTest
+import RxSwift
 
 @testable import exchange
 final class ExchangeRateProviderTest: XCTestCase {
 
     func testLoad() {
-        let expectationLoad = expectation(description: #function)
         let storage = StorageSpy()
         let api = APISpy()
         let provider = ExchangeRateProviderImpl(storage: storage, api: api)
         
-        provider.load {
-            XCTAssertGreaterThan(storage.currencies.count, 0)
-            XCTAssertGreaterThan(storage.quotes.count, 0)
-            XCTAssertNotNil(storage.source)
-            XCTAssertNotNil(storage.timestamp)
-            XCTAssertEqual(api.source, "USD")
-            
-            expectationLoad.fulfill()
-        }
+        let disposable = provider.load().subscribe()
+        defer { disposable.dispose() }
         
-        wait(for: [expectationLoad], timeout: 1)
+        XCTAssertGreaterThan(storage.currencies.count, 0)
+        XCTAssertGreaterThan(storage.quotes.count, 0)
+        XCTAssertNotNil(storage.source)
+        XCTAssertNotNil(storage.timestamp)
+        XCTAssertEqual(api.source, "USD")
     }
     
-    func testFetchConvertedCurrenciesFromCache() {
-        let expectationTest = expectation(description: #function)
+    func testFetchConvertedCurrenciesFromCache() throws {
         let api = APISpy()
         let storage = StorageSpy()
         storage.source = Currency(code: "BBB", name: "")
@@ -40,29 +36,22 @@ final class ExchangeRateProviderTest: XCTestCase {
                                 rightValue: 1)]
         let provider = ExchangeRateProviderImpl(storage: storage, api: api)
         
-        provider.fetchConvertedCurrencies(from: Currency(code: "BBB", name: ""),
-                                          value: 1) { results in
-            XCTAssertGreaterThan(results.count, 0)
-            expectationTest.fulfill()
-        }
+        let results = try provider.fetchConvertedCurrencies(from: Currency(code: "BBB", name: ""),
+                                          value: 1).toBlocking().first()!
         
-        wait(for: [expectationTest], timeout: 1)
+        XCTAssertGreaterThan(results.count, 0)
         XCTAssertFalse(api.getLiveDataCalled)
     }
     
-    func testFetchConvertedCurrenciesFromApi() {
-        let expectationTest = expectation(description: #function)
+    func testFetchConvertedCurrenciesFromApi() throws {
         let api = APISpy()
         let storage = StorageSpy()
         let provider = ExchangeRateProviderImpl(storage: storage, api: api)
         
-        provider.fetchConvertedCurrencies(from: Currency(code: "AAA", name: ""),
-                                          value: 1) { results in
-            XCTAssertGreaterThan(results.count, 0)
-            expectationTest.fulfill()
-        }
+        let results = try provider.fetchConvertedCurrencies(from: Currency(code: "AAA", name: ""),
+                                                            value: 1).toBlocking().first()!
         
-        wait(for: [expectationTest], timeout: 1)
+        XCTAssertGreaterThan(results.count, 0)
         XCTAssertTrue(api.getLiveDataCalled)
     }
     
@@ -105,21 +94,21 @@ final class StorageSpy: ExchangeRateStore {
 final class APISpy: ExchangeRateApi {
     var source = ""
     var getLiveDataCalled = false
-    func getLiveData(source: String, completion: @escaping ([Quote], Currency?, Date?) -> ()) {
+    func getLiveData(source: String) -> Single<([Quote], Currency, Date)> {
         self.source = source
         self.getLiveDataCalled = true
         let quotes = [Quote(left: Currency(code: "AAA", name: ""),
                             right: Currency(code: "BBB", name: ""),
                             leftValue: 1, rightValue: 1)]
-        completion(quotes, Currency(code: "AAA", name: ""), Date())
+        return .just((quotes, Currency(code: "AAA", name: ""), Date()))
     }
     
-    func getAvailableCurrencies(completion: @escaping ([Currency]) -> ()) {
-        completion([Currency(code: "AAA", name: "")])
+    func getAvailableCurrencies() -> Single<[Currency]> {
+        .just([Currency(code: "AAA", name: "")])
     }
 }
 
 final class APIDummy: ExchangeRateApi {
-    func getLiveData(source: String, completion: @escaping ([Quote], Currency?, Date?) -> ()) {}
-    func getAvailableCurrencies(completion: @escaping ([Currency]) -> ()) {}
+    func getLiveData(source: String) -> Single<([Quote], Currency, Date)> { .never() }
+    func getAvailableCurrencies() -> Single<[Currency]> { .never() }
 }
