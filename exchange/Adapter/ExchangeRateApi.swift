@@ -9,6 +9,10 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+private func getAPIKey() -> String {
+    ProcessInfo.processInfo.environment["api_key"]!
+}
+
 enum APIError: Error {
     case URLError
 }
@@ -26,7 +30,7 @@ extension ExchangeRateApi {
 
 struct ExchangeRateApiImpl: ExchangeRateApi {
     let baseUrl = "http://apilayer.net/api"
-    let accessKey = "39d434a114eeceb94f0b4996307e8dcd"
+    let accessKey = getAPIKey()
     
     func getAvailableCurrencies() -> Single<[Currency]> {
         var urlComponents = URLComponents(string: baseUrl)
