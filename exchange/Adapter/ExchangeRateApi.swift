@@ -15,6 +15,7 @@ private func getAPIKey() -> String {
 
 enum APIError: Error {
     case URLError
+    case ServerError
 }
 
 protocol ExchangeRateApi {
@@ -44,7 +45,11 @@ struct ExchangeRateApiImpl: ExchangeRateApi {
             .map { data in
                 let responseData = try JSONDecoder().decode(SupportedCurrencyResponse.self,
                                                             from: data)
-                return responseData.success ? currencies(from: responseData.currencies) : []
+                if responseData.success {
+                    return currencies(from: responseData.currencies)
+                } else {
+                    throw APIError.ServerError
+                }
             }
             .take(1)
             .asSingle()
@@ -63,10 +68,14 @@ struct ExchangeRateApiImpl: ExchangeRateApi {
                 let responseData = try JSONDecoder().decode(LiveDataResponse.self,
                                                             from: data)
                 
-                let quotes = responseData.success ? quotes(from: responseData.quotes) : []
-                return (quotes,
-                        Currency(code: responseData.source, name: ""),
-                        Date(timeIntervalSince1970: TimeInterval(responseData.timestamp)))
+                if responseData.success {
+                    let quotes = quotes(from: responseData.quotes)
+                    return (quotes,
+                            Currency(code: responseData.source, name: ""),
+                            Date(timeIntervalSince1970: TimeInterval(responseData.timestamp)))
+                } else {
+                    throw APIError.ServerError
+                }
             }
             .take(1)
             .asSingle()
@@ -87,7 +96,16 @@ private func quotes(from values: [String: Decimal]) -> [Quote] {
 }
 
 private func currencies(from values: [String: String]) -> [Currency] {
-    values.keys
-        .filter { values[$0] != nil }
-        .map { Currency(code: $0, name: values[$0]!) }
+    values.keys.compactMap { Currency(code: $0, name: values[$0]) }
+}
+
+extension Currency {
+    init?(code: String, name: String?) {
+        if let name = name {
+            self.code = code
+            self.name = name
+        } else {
+            return nil
+        }
+    }
 }
