@@ -25,7 +25,13 @@ final class ExchangeRateViewModel {
     }
     private let convertedValues = PublishRelay<[CurrencyValue]>()
     
+    var showAlert: Driver<String> {
+        alert.asDriver(onErrorJustReturn: "Unknown error")
+    }
+    private let alert = PublishRelay<String>()
+    
     private let disposeBag = DisposeBag()
+    private let fetchValueDisposable = SerialDisposable()
     
     private let exchangeRateProvider: ExchangeRateProvider
     
@@ -46,28 +52,34 @@ final class ExchangeRateViewModel {
         
         exchangeRateProvider.load().subscribe { [weak self] _ in
             self?.loadingVisibility.accept(false)
+        } onError: { [weak self] error in
+            self?.alert.accept(error.localizedDescription)
+            self?.loadingVisibility.accept(false)
         } onCompleted: { [weak self] in
             self?.availableCurrencies = self?.exchangeRateProvider.availableCurrencies ?? []
+            self?.loadingVisibility.accept(false)
         }.disposed(by: disposeBag)
         
         numberValue.map { [weak self] value in
             self?.load(value)
-        }
-        .subscribe().disposed(by: disposeBag)
+        }.subscribe().disposed(by: disposeBag)
     }
     
     private func load(_ value: String) {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = Locale.current
         if let number = numberFormatter.number(from: value) {
-            exchangeRateProvider.fetchConvertedCurrencies(from: self.selectedCurrency,
-                                                          value: number.decimalValue)
+            fetchValueDisposable.disposable = exchangeRateProvider
+                .fetchConvertedCurrencies(from: self.selectedCurrency,
+                                          value: number.decimalValue)
                 .subscribe { [weak self] values in
                     self?.convertedValues.accept(values)
+                } onError: { [weak self] error in
+                    self?.alert.accept(error.localizedDescription)
                 }
-                .disposed(by: self.disposeBag)
         } else {
             convertedValues.accept([])
+            alert.accept("Invalid number")
         }
     }
 }

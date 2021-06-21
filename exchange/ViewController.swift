@@ -25,10 +25,6 @@ final class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel.loadingVisible.map { !$0 }
-            .drive()
-            .disposed(by: disposeBag)
-        
         viewModel.values.drive(
             currencyList.rx
                 .items(cellIdentifier: "Cell",
@@ -43,8 +39,18 @@ final class ViewController: UIViewController {
             .drive(loadingIndicator.rx.isHidden)
             .disposed(by: disposeBag)
         
-        value.rx.text.changed
-            .compactMap { $0 }
+        viewModel.showAlert.drive(onNext: { [unowned self] message in
+            let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+            alert.addAction(.init(title: "close", style: .default, handler: { _ in
+                alert.dismiss(animated: true)
+            }))
+            self.present(alert, animated: true)
+        }).disposed(by: disposeBag)
+
+        
+        value.rx
+            .controlEvent(.editingDidEnd)
+            .compactMap { [unowned self] in value.text }
             .subscribe(onNext: { [weak self] value in
                 self?.viewModel.numberValue.accept(value)
             })
