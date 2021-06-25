@@ -10,6 +10,15 @@ import RxSwift
 import RxRelay
 import RxCocoa
 
+extension CurrencyValue {
+    func getFormattedValue(_ formatter: NumberFormatter = NumberFormatter()) -> String? {
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 4
+        
+        return formatter.string(from: value as NSDecimalNumber)
+    }
+}
+
 final class ExchangeRateViewModel {
     private(set) var selectedCurrency = Currency(code: "USD", name: "United States Dollar")
     private(set) var availableCurrencies: [Currency] = []
@@ -24,6 +33,11 @@ final class ExchangeRateViewModel {
         convertedValues.asDriver(onErrorJustReturn: [])
     }
     private let convertedValues = PublishRelay<[CurrencyValue]>()
+    
+    var lastFetchTimeDisplay: Driver<String> {
+        lastFetchTime.asDriver(onErrorJustReturn: "-")
+    }
+    private let lastFetchTime = PublishRelay<String>()
     
     var showAlert: Driver<String> {
         alert.asDriver(onErrorJustReturn: "Unknown error")
@@ -72,14 +86,24 @@ final class ExchangeRateViewModel {
             fetchValueDisposable.disposable = exchangeRateProvider
                 .fetchConvertedCurrencies(from: self.selectedCurrency,
                                           value: number.decimalValue)
-                .subscribe { [weak self] values in
-                    self?.convertedValues.accept(values)
+                .subscribe { [weak self] values, timestamp in
+                    guard let `self` = self else { return }
+                    self.convertedValues.accept(values)
+                    self.lastFetchTime.accept(self.formattedLastFetchTime(timestamp))
                 } onError: { [weak self] error in
                     self?.alert.accept(error.localizedDescription)
                 }
         } else {
             convertedValues.accept([])
+            lastFetchTime.accept("")
             alert.accept("Invalid number")
         }
+    }
+    
+    private func formattedLastFetchTime(_ value: Date?) -> String {
+        guard let value = value else { return "" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MM-yyyy HH:mm"
+        return formatter.string(from: value)
     }
 }

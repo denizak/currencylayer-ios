@@ -45,6 +45,18 @@ final class ExchangeRateViewModelTest: XCTestCase {
         XCTAssertEqual(observer.value.count, 0)
     }
 
+    func testLastFetchTimeDisplay() {
+        let actualLastFetchTimeDisplay = BehaviorRelay<String>(value: "")
+        let viewModel = ExchangeRateViewModel(provider: ExchangeRateProviderMock())
+        
+        let disposable = viewModel.lastFetchTimeDisplay.drive(actualLastFetchTimeDisplay)
+        defer { disposable.dispose() }
+        
+        viewModel.viewLoad()
+        viewModel.numberValue.accept("1")
+        
+        XCTAssertEqual(actualLastFetchTimeDisplay.value, "24-06-2021 14:09")
+    }
 }
 
 final class ExchangeRateProviderMock: ExchangeRateProvider {
@@ -55,10 +67,11 @@ final class ExchangeRateProviderMock: ExchangeRateProvider {
         return .just(())
     }
     
-    func fetchConvertedCurrencies(from currency: Currency, value: Decimal) -> Observable<[CurrencyValue]> {
-        .just([
+    func fetchConvertedCurrencies(from currency: Currency, value: Decimal) -> Observable<([CurrencyValue], Date?)> {
+        .just(([
             CurrencyValue(currency: Currency(code: "AAA", name: ""),
                           value: 1)
-        ])
+        ],
+        ISO8601DateFormatter().date(from: "2021-06-24T07:09:59Z")))
     }
 }

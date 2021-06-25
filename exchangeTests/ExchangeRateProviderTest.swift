@@ -29,6 +29,7 @@ final class ExchangeRateProviderTest: XCTestCase {
     func testFetchConvertedCurrenciesFromCache() throws {
         let api = APISpy()
         let storage = StorageSpy()
+        storage.timestamp = Date()
         storage.source = Currency(code: "BBB", name: "")
         storage.quotes = [Quote(left: Currency(code: "BBB", name: ""),
                                 right: Currency(code: "AAA", name: ""),
@@ -39,7 +40,8 @@ final class ExchangeRateProviderTest: XCTestCase {
         let results = try provider.fetchConvertedCurrencies(from: Currency(code: "BBB", name: ""),
                                           value: 1).toBlocking().first()!
         
-        XCTAssertGreaterThan(results.count, 0)
+        XCTAssertGreaterThan(results.0.count, 0)
+        XCTAssertNotNil(results.1)
         XCTAssertFalse(api.getLiveDataCalled)
     }
     
@@ -51,7 +53,8 @@ final class ExchangeRateProviderTest: XCTestCase {
         let results = try provider.fetchConvertedCurrencies(from: Currency(code: "AAA", name: ""),
                                                             value: 1).toBlocking().first()!
         
-        XCTAssertGreaterThan(results.count, 0)
+        XCTAssertGreaterThan(results.0.count, 0)
+        XCTAssertNotNil(results.1)
         XCTAssertTrue(api.getLiveDataCalled)
     }
     

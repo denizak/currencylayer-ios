@@ -53,7 +53,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hmi-ZH-wTw">
                                 <rect key="frame" x="0.0" y="44" width="414" height="87"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="1" borderStyle="roundedRect" placeholder="Input Number" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GyR-SR-CoO">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Input Number" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GyR-SR-CoO">
                                         <rect key="frame" x="64" y="26.5" width="330" height="34"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="34" id="5I5-SZ-COF"/>
@@ -77,13 +77,21 @@
                                             <action selector="changeCurrency:" destination="BYZ-38-t0r" eventType="touchUpInside" id="o8C-go-Rgx"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zgo-Ma-0w1">
+                                        <rect key="frame" x="388" y="66" width="6" height="15"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemTealColor"/>
                                 <constraints>
                                     <constraint firstItem="wAI-2h-k7y" firstAttribute="leading" secondItem="hmi-ZH-wTw" secondAttribute="leading" constant="10" id="Oxq-bo-KNf"/>
+                                    <constraint firstAttribute="bottom" secondItem="zgo-Ma-0w1" secondAttribute="bottom" constant="6" id="UC7-Q0-n5P"/>
                                     <constraint firstItem="GyR-SR-CoO" firstAttribute="centerY" secondItem="hmi-ZH-wTw" secondAttribute="centerY" id="Ziu-dm-moT"/>
                                     <constraint firstItem="GyR-SR-CoO" firstAttribute="leading" secondItem="wAI-2h-k7y" secondAttribute="trailing" constant="8" symbolic="YES" id="goL-Wp-9Tr"/>
                                     <constraint firstAttribute="height" constant="87" id="kGR-wE-avk"/>
+                                    <constraint firstItem="zgo-Ma-0w1" firstAttribute="trailing" secondItem="GyR-SR-CoO" secondAttribute="trailing" id="mqi-vf-Qbj"/>
                                     <constraint firstAttribute="trailing" secondItem="GyR-SR-CoO" secondAttribute="trailing" constant="20" id="pPX-TX-jAj"/>
                                     <constraint firstItem="wAI-2h-k7y" firstAttribute="centerY" secondItem="hmi-ZH-wTw" secondAttribute="centerY" id="qxQ-CN-UOu"/>
                                 </constraints>
@@ -132,6 +140,7 @@
                         <outlet property="currencyList" destination="ZHB-vv-abF" id="pjd-cE-crX"/>
                         <outlet property="currencyPicker" destination="Z7u-ji-ceA" id="J1Z-fs-56z"/>
                         <outlet property="currencyPickerContainer" destination="Ne2-zY-0Qx" id="xiF-KK-6Ls"/>
+                        <outlet property="lastFetchTime" destination="zgo-Ma-0w1" id="Vox-n5-Ajm"/>
                         <outlet property="loadingIndicator" destination="3dv-Fj-EAw" id="O0z-7J-Ihj"/>
                         <outlet property="value" destination="GyR-SR-CoO" id="wfB-as-AiM"/>
                     </connections>

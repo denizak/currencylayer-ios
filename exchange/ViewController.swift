@@ -16,23 +16,29 @@ final class ViewController: UIViewController {
     @IBOutlet weak var currencyButton: UIButton!
     @IBOutlet weak var currencyList: UITableView!
     @IBOutlet weak var currencyPickerContainer: UIView!
+    @IBOutlet weak var lastFetchTime: UILabel!
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     
-    let viewModel = createExchangeRateViewModel()
-    
+    private let viewModel = createExchangeRateViewModel()
     private let disposeBag = DisposeBag()
+    private let numberFormatter = NumberFormatter()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel.values.drive(
-            currencyList.rx
-                .items(cellIdentifier: "Cell",
-                       cellType: UITableViewCell.self)) { (row, item, cell) in
-            cell.textLabel?.text = item.currency.code
-            cell.detailTextLabel?.text =
-                String(format: "%.4f", (item.value as NSDecimalNumber).doubleValue)
-        }.disposed(by: disposeBag)
+        viewModel.values
+            .drive(
+                currencyList.rx
+                    .items(cellIdentifier: "Cell",
+                           cellType: UITableViewCell.self)) { [unowned self] (row, item, cell) in
+                cell.textLabel?.text = item.currency.code
+                cell.detailTextLabel?.text = item.getFormattedValue(self.numberFormatter)
+            }.disposed(by: disposeBag)
+        
+        viewModel.lastFetchTimeDisplay
+            .drive(lastFetchTime.rx.text)
+            .disposed(by: disposeBag)
+            
         
         viewModel.loadingVisible
             .map { !$0 }

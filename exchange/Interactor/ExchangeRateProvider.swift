@@ -8,10 +8,15 @@
 import Foundation
 import RxSwift
 
+enum ExchangeRateError: Error {
+    case notExist
+}
+
 protocol ExchangeRateProvider {
     var availableCurrencies: [Currency] { get }
     func load() -> Observable<()>
-    func fetchConvertedCurrencies(from currency: Currency, value: Decimal) -> Observable<[CurrencyValue]>
+    func fetchConvertedCurrencies(from currency: Currency, value: Decimal)
+    -> Observable<([CurrencyValue], Date?)>
 }
 
 final class ExchangeRateProviderImpl: ExchangeRateProvider {
@@ -51,16 +56,16 @@ final class ExchangeRateProviderImpl: ExchangeRateProvider {
     }
     
     func fetchConvertedCurrencies(from currency: Currency, value: Decimal)
-    -> Observable<[CurrencyValue]> {
+    -> Observable<([CurrencyValue], Date?)> {
         if let _ = storage.source, storage.quotes.count > 0 {
             let results = computeConversion(from: currency, value: value)
-            return .just(results)
+            return .just((results, storage.timestamp))
         } else {
             return load()
                 .map { [weak self] _ in
                     guard let results = self?.computeConversion(from: currency, value: value)
-                    else { return [] }
-                    return results
+                    else { throw ExchangeRateError.notExist }
+                    return (results, self?.storage.timestamp)
                 }
         }
     }
